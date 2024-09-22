@@ -24,11 +24,11 @@ export class News extends Component {
     this.state.progressValue=20;
 
     const a=import.meta.env.VITE_REACT_API_VALUE
-    // console.log(a);
+   
     let url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=${a}&page=${
       this.state.page
     }`;
-    console.log(url);
+  
     this.setState({loading:true })
     let data = await fetch(url);
     this.setState({progressValue:60});
