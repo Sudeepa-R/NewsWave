@@ -15,9 +15,9 @@ export class Newsitem extends Component {
                 By {author} on {new Date(date).toGMTString()}
               </small>
             </p>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               {source}
-              <span class="visually-hidden">unread messages</span>
+              <span className="visually-hidden">unread messages</span>
             </span>
             <a href={newsUrl} target="_blank" className="btn btn-sm btn-dark">
               Read More . .

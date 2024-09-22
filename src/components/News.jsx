@@ -3,8 +3,6 @@ import Newsitem from "./Newsitem";
 import Spinner from "./Spinner";
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingBar from 'react-top-loading-bar'
-import { MY_CONSTANT } from "./ConstantValue";
-
 export class News extends Component {
   constructor(props) {
     super(props);
@@ -22,11 +20,15 @@ export class News extends Component {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
   async componentDidMount() {
- 
+   
     this.state.progressValue=20;
-    let url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=${MY_CONSTANT}&page=${
+
+    const a=import.meta.env.VITE_REACT_API_VALUE
+    // console.log(a);
+    let url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=${a}&page=${
       this.state.page
     }`;
+    console.log(url);
     this.setState({loading:true })
     let data = await fetch(url);
     this.setState({progressValue:60});
@@ -44,7 +46,8 @@ export class News extends Component {
 
   fetchMoreData = async () => {
     this.setState({ page: this.state.page + 1 });
-    const url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=${MY_CONSTANT}&page=${this.state.page}`;
+    const a=import.meta.env.VITE_REACT_API_VALUE
+    const url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=${a}&page=${this.state.page}`;
     this.setState({loading:true })
     let data = await fetch(url);
     let parsedData = await data.json();
