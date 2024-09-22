@@ -22,7 +22,7 @@ export class News extends Component {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
   async componentDidMount() {
-   console.log(MY_CONSTANT);
+ 
     this.state.progressValue=20;
     let url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=${MY_CONSTANT}&page=${
       this.state.page
