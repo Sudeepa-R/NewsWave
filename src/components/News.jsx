@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import Newsitem from "./Newsitem";
 import Spinner from "./Spinner";
-import PropTypes from 'prop-types'
+import InfiniteScroll from "react-infinite-scroll-component";
+import LoadingBar from 'react-top-loading-bar'
+import { MY_CONSTANT } from "./ConstantValue";
 
 export class News extends Component {
   constructor(props) {
@@ -10,6 +12,8 @@ export class News extends Component {
       articles: [],
       loading: false,
       page: 1,
+      totalResult:0,
+      progressValue:0,
     };
     document.title=`${this.capitalize(this.props.category)}- NewsWave`;
   }
@@ -18,53 +22,58 @@ export class News extends Component {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
   async componentDidMount() {
-    let url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=60066e94a1254e27889f95eaae4b6571 &page=${
-      this.state.page + 1
+   console.log(MY_CONSTANT);
+    this.state.progressValue=20;
+    let url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=${MY_CONSTANT}&page=${
+      this.state.page
     }`;
     this.setState({loading:true })
     let data = await fetch(url);
+    this.setState({progressValue:60});
     let parsedData = await data.json();
     this.setState({
       page: this.state.page + 1,
       articles: parsedData.articles,
-      loading:false
+      loading:false,
+      totalResult: parsedData.totalResults,
+      progressValue:100
     });
+   
+   
   }
 
-  handlePreClick = async () => {
-    console.log("pre");
-    let url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=60066e94a1254e27889f95eaae4b6571&page=${
-      this.state.page - 1
-    }`;
+  fetchMoreData = async () => {
+    this.setState({ page: this.state.page + 1 });
+    const url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=${MY_CONSTANT}&page=${this.state.page}`;
     this.setState({loading:true })
     let data = await fetch(url);
     let parsedData = await data.json();
     this.setState({
-      page: this.state.page - 1,
-      articles: parsedData.articles,
-      loading:false
-    });
-  };
-  handleNextClick = async () => {
-    console.log("Next");
-    let url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=60066e94a1254e27889f95eaae4b6571&page=${
-      this.state.page + 1
-    }&pageSize=10`;
-    this.setState({loading:true })
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    this.setState({
-      page: this.state.page + 1,
-      articles: parsedData.articles,
+      articles: this.state.articles.concat(parsedData.articles),
+      totalResults: parsedData.totalResults,
       loading:false
     });
   };
   render() {
     return (
       <div className="container my-3">
-        <h1 style={{ textAlign: "center" }}>NewsMonkey- Top {this.capitalize(this.props.category)} Headlines </h1>
-        {this.state.loading && <Spinner/>}
+        
+         <LoadingBar
+         height={3}
+        color='#f11946'
+        progress={this.state.progressValue}
+        onLoaderFinished={() => setProgress(0)}
+      />
+        <h1 style={{ textAlign: "center" }}>NewsWave- Top {this.capitalize(this.props.category)} Headlines </h1>
+        <InfiniteScroll
+          style={{height: 'auto', overflow: 0}}
+          dataLength={this.state.articles.length} 
+          next={this.fetchMoreData}
+          hasMore={this.state.articles.length !== this.state.totalResults} 
+          loader={<Spinner />} 
+        >
         <div className="row">
+        
           {this.state.articles.map((element) => (
             
             <div className="col-md-4" key={element.url}>
@@ -79,26 +88,10 @@ export class News extends Component {
               />
             </div>
           ))}
+        
         </div>
-        <div className="container">
-          <button
-            type="button"
-            disabled={this.state.page <= 1}
-            class="btn btn-success"
-            onClick={this.handlePreClick}
-          >
-            {" "}
-            &larr; Previous
-          </button>
-          <button
-            type="button"
-            class="btn btn-success "
-            onClick={this.handleNextClick}
-            style={{ float: "right" }}
-          >
-            Next &rarr;
-          </button>
-        </div>
+        
+        </InfiniteScroll>
       </div>
     );
   }
