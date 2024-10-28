@@ -67,7 +67,7 @@ export class News extends Component {
         progress={this.state.progressValue}
         onLoaderFinished={() => setProgress(0)}
       />
-        <h1 style={{ textAlign: "center" }}>NewsWave- Top {this.capitalize(this.props.category)} Headlines </h1>
+        <h1 style={{ textAlign: "center",marginTop:'70px' }}>NewsWave- Top {this.capitalize(this.props.category)} Headlines </h1>
         <InfiniteScroll
           style={{height: 'auto', overflow: 0}}
           dataLength={this.state.articles.length} 
