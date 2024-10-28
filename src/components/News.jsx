@@ -24,10 +24,9 @@ export class News extends Component {
     this.state.progressValue=20;
 
     const a=import.meta.env.VITE_REACT_API_VALUE
-   
-    let url = `https://newsapi.org/v2/top-headlines?category=${this.props.category}&apiKey=${a}&page=${
-      this.state.page
-    }`;
+    let url = `https://gnews.io/api/v4/search?q=example&category=sports&lang=en&max=100&apikey=${a}`;
+
+    // let url = `https://newsapi.org/v2/top-headlines?category=sports&apiKey=60066e94a1254e27889f95eaae4b6571`;
   
     this.setState({loading:true })
     let data = await fetch(url);
@@ -37,7 +36,7 @@ export class News extends Component {
       page: this.state.page + 1,
       articles: parsedData.articles,
       loading:false,
-      totalResult: parsedData.totalResults,
+      totalResult: parsedData.totalArticles,
       progressValue:100
     });
    
@@ -53,7 +52,7 @@ export class News extends Component {
     let parsedData = await data.json();
     this.setState({
       articles: this.state.articles.concat(parsedData.articles),
-      totalResults: parsedData.totalResults,
+      totalArticles: parsedData.totalArticles,
       loading:false
     });
   };
@@ -72,7 +71,7 @@ export class News extends Component {
           style={{height: 'auto', overflow: 0}}
           dataLength={this.state.articles.length} 
           next={this.fetchMoreData}
-          hasMore={this.state.articles.length !== this.state.totalResults} 
+          hasMore={this.state.articles.length !== this.state.totalArticles} 
           loader={<Spinner />} 
         >
         <div className="row">
